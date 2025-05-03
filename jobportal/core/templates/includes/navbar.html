@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">JobPortal</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'job_list' %}">Jobs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                </li>
+            </ul>
+
+            <form class="d-flex me-3" action="{% url 'search' %}" method="GET">
+                <input class="form-control me-2" type="search" placeholder="Search jobs, companies..." name="q">
+                <button class="btn btn-outline-light" type="submit">Search</button>
+            </form>
+
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle" width="30" height="30">
+                            {% else %}
+                                <i class="bi bi-person-circle"></i>
+                            {% endif %}
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if user.user_type == 'job_seeker' %}
+                                <li><a class="dropdown-item" href="{% url 'job_seeker_profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">My Applications</a></li>
+                            {% elif user.user_type == 'business' %}
+                                <li><a class="dropdown-item" href="{% url 'business_profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'business_job_list' %}">My Jobs</a></li>
+                                <li><a class="dropdown-item" href="{% url 'business_applications' %}">Applications</a></li>
+                                <li><a class="dropdown-item" href="{% url 'company_dashboard' %}">Dashboard</a></li>
+                            {% elif user.user_type == 'freelancer' %}
+                                <li><a class="dropdown-item" href="{% url 'freelancer_profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'freelancer_dashboard' %}">Dashboard</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="authDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person"></i> Account
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'register_job_seeker' %}">Register as Job Seeker</a></li>
+                            <li><a class="dropdown-item" href="{% url 'register_business' %}">Register as Business</a></li>
+                            <li><a class="dropdown-item" href="{% url 'register_freelancer' %}">Register as Freelancer</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

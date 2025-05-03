@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2>Available Jobs</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        {% if user.user_type == 'business' and user.is_approved %}
+            <a href="{% url 'job_post' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Post a Job
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Filters</h5>
+            </div>
+            <div class="card-body">
+                <h6>Categories</h6>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{% url 'job_list' %}" class="text-decoration-none {% if not selected_category %}fw-bold{% endif %}">
+                            All Categories
+                        </a>
+                    </li>
+                    {% for category in categories %}
+                        <li>
+                            <a href="{% url 'job_list' %}?category={{ category.name }}" 
+                               class="text-decoration-none {% if selected_category == category.name %}fw-bold{% endif %}">
+                                {{ category.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5 class="card-title">
+                                    <a href="{% url 'job_detail' job.pk %}" class="text-decoration-none">{{ job.title }}</a>
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ job.company.company_name }}</h6>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary">{{ job.get_job_type_display }}</span>
+                                <span class="badge bg-secondary ms-1">{{ job.get_experience_level_display }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-2">
+                            <span class="text-muted"><i class="bi bi-geo-alt"></i> {{ job.location }}</span>
+                            {% if job.min_salary and job.max_salary %}
+                                <span class="text-muted ms-3"><i class="bi bi-cash"></i> ${{ job.min_salary|floatformat:"0" }} - ${{ job.max_salary|floatformat:"0" }}</span>
+                            {% endif %}
+                            <span class="text-muted ms-3"><i class="bi bi-clock"></i> Posted {{ job.posted_date|timesince }} ago</span>
+                        </div>
+                        
+                        <p class="card-text mt-2">{{ job.description|truncatewords:30 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                {% if job.category %}
+                                    <span class="badge bg-info">{{ job.category.name }}</span>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">No jobs found matching your criteria.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

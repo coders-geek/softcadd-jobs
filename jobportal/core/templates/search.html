@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Search Results for "{{ query }}"</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{% url 'search' %}">
+                        <input type="hidden" name="q" value="{{ query }}">
+                        <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="type" value="job" id="typeJob" checked>
+                                <label class="form-check-label" for="typeJob">Jobs</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="type" value="company" id="typeCompany" checked>
+                                <label class="form-check-label" for="typeCompany">Companies</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="type" value="freelancer" id="typeFreelancer" checked>
+                                <label class="form-check-label" for="typeFreelancer">Freelancers</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            {% if jobs or companies or freelancers %}
+                {% if jobs %}
+                    <div class="mb-5">
+                        <h4 class="mb-4">Jobs ({{ jobs.count }})</h4>
+                        <div class="list-group">
+                            {% for job in jobs %}
+                                <a href="{% url 'job_detail' job.pk %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ job.title }}</h5>
+                                        <small>{{ job.posted_date|timesince }} ago</small>
+                                    </div>
+                                    <p class="mb-1">{{ job.company.company_name }} • {{ job.location }}</p>
+                                    <small class="text-muted">{{ job.get_job_type_display }} • {{ job.get_experience_level_display }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% if companies %}
+                    <div class="mb-5">
+                        <h4 class="mb-4">Companies ({{ companies.count }})</h4>
+                        <div class="row g-4">
+                            {% for company in companies %}
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                {% if company.logo %}
+                                                    <img src="{{ company.logo.url }}" alt="{{ company.company_name }}" class="rounded-circle me-3" width="50" height="50">
+                                                {% endif %}
+                                                <h5 class="mb-0">{{ company.company_name }}</h5>
+                                            </div>
+                                            <p class="card-text">{{ company.description|truncatewords:20 }}</p>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% if freelancers %}
+                    <div class="mb-5">
+                        <h4 class="mb-4">Freelancers ({{ freelancers.count }})</h4>
+                        <div class="row g-4">
+                            {% for freelancer in freelancers %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            {% if freelancer.user.profile_picture %}
+                                                <img src="{{ freelancer.user.profile_picture.url }}" alt="Profile" class="rounded-circle mb-3" width="100" height="100">
+                                            {% else %}
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 100px; height: 100px;">
+                                                    <i class="bi bi-person" style="font-size: 2rem;"></i>
+                                                </div>
+                                            {% endif %}
+                                            <h5>{{ freelancer.user.get_full_name }}</h5>
+                                            <p class="text-muted">{{ freelancer.bio|truncatewords:10 }}</p>
+                                            <p class="text-primary">${{ freelancer.hourly_rate }}/hour</p>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">No results found for "{{ query }}". Try different keywords.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

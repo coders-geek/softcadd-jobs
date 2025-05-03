@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Application for {{ application.job.title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        {% if application.applicant.profile_picture %}
+                            <img src="{{ application.applicant.profile_picture.url }}" alt="Profile" class="img-fluid rounded-circle mb-3" width="150">
+                        {% else %}
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                                <i class="bi bi-person" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h3>{{ application.applicant.get_full_name }}</h3>
+                        <p class="text-muted">{{ application.applicant.email }}</p>
+                        
+                        {% with profile=application.applicant.job_seeker_profile %}
+                            {% if profile %}
+                                <p><i class="bi bi-telephone"></i> {{ profile.mobile_number }}</p>
+                                {% if profile.resume %}
+                                    <a href="{{ profile.resume.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="bi bi-file-earmark-text"></i> View Resume
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Cover Letter</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            {% if application.cover_letter %}
+                                {{ application.cover_letter|linebreaks }}
+                            {% else %}
+                                <p class="text-muted">No cover letter provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Application Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            {% for value, display in application.APPLICATION_STATUS_CHOICES %}
+                                <option value="{{ value }}" {% if application.status == value %}selected{% endif %}>{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comments" class="form-label">Comments</label>
+                        <textarea class="form-control" id="comments" name="comments" rows="3">{{ application.comments|default:'' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
