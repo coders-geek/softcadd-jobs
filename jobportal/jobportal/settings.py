@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-fusuj@(x$ml4uy$((8a2l-c0!p7msva=l!@$f@n*h&70ezbi6r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['softcadd-jobs.onrender.com','127.0.0.1','localhost']
 
 
 # Application definition
