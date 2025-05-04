@@ -59,27 +59,28 @@
                 {% endif %}
                 
                 {% if companies %}
-                    <div class="mb-5">
-                        <h4 class="mb-4">Companies ({{ companies.count }})</h4>
-                        <div class="row g-4">
-                            {% for company in companies %}
-                                <div class="col-md-6">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center mb-3">
-                                                {% if company.logo %}
-                                                    <img src="{{ company.logo.url }}" alt="{{ company.company_name }}" class="rounded-circle me-3" width="50" height="50">
-                                                {% endif %}
-                                                <h5 class="mb-0">{{ company.company_name }}</h5>
-                                            </div>
-                                            <p class="card-text">{{ company.description|truncatewords:20 }}</p>
-                                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
-                                        </div>
+                <div class="mb-5">
+                    <h4 class="mb-4">Companies ({{ companies.count }})</h4>
+                    <div class="row g-4">
+                        {% for company in companies %}
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        {% if company.logo %}
+                                            <img src="{{ company.logo.url }}" alt="{{ company.company_name }}"
+                                                 class="rounded-circle me-3" width="50" height="50">
+                                        {% endif %}
+                                        <h5 class="mb-0">{{ company.company_name }}</h5>
                                     </div>
+                                    <p class="card-text">{{ company.description|truncatewords:20 }}</p>
+                                    <a href="#" class="btn btn-sm btn-outline-success">View Profile</a>
                                 </div>
-                            {% endfor %}
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
+                </div>
                 {% endif %}
                 
                 {% if freelancers %}
